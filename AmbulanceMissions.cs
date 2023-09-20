@@ -15,7 +15,7 @@ public class GtaAmbulance : Script
         KeyDown += OnKeyDown;
         Tick += OnTick;
         Interval = 1;
-        _bigmessage = new UIText("PARAMEDIC", new Point(630, 100), 2.8f, Color.Goldenrod, GTA.Font.Monospace, true);
+        _bigmessage = new UIText("PARAMEDIC", new Point(630, 100), 2.8f, Color.Goldenrod, GTA.Font.Pricedown, true);
     }
     private const int PayoutMultiplier = 100;
 
@@ -33,7 +33,7 @@ public class GtaAmbulance : Script
     private int _level = 1;
     private int _timer = 1000;
     private bool _showMessage;
-    private int[] _difficultyScale = {100, 90, 85, 80, 75, 70, 60, 55, 50, 45, 40, 35, 30};
+    private int[] _difficultyScale = {200, 190, 185, 180, 175, 170, 160, 155, 150, 145, 140, 135, 130};
     private int _baseDamage = 900;
 
 
@@ -154,7 +154,7 @@ public class GtaAmbulance : Script
 
         if (_victimPed != null && _onAmbulanceMission)
         {
-            if (_victimPed.Health <= 20 && !_critical && !_victimPed.IsInVehicle() && !_cprBeingApplied)
+            if (_victimPed.Health <= 120 && !_critical && !_victimPed.IsInVehicle() && !_cprBeingApplied)
             {
                 _critical = true;
                 UI.Notify("The ~g~patient~w~ is in critical condition! You will have to CPR him.");
@@ -175,13 +175,13 @@ public class GtaAmbulance : Script
                     if (_reanimationFailed)
                     {
                         _cprBeingApplied = false;
-                        _victimPed.Health = -1;
+                        _victimPed.Health = 99;
                         _cprAppliedThisMission = true;
                     }
                     else
                     {
                         _cprBeingApplied = false;
-                        _victimPed.Health = 30;
+                        _victimPed.Health = 130;
                         _cprAppliedThisMission = true;
                     }
                 }
@@ -191,7 +191,7 @@ public class GtaAmbulance : Script
         if (_victimPed != null && _onAmbulanceMission && player.IsInVehicle())
         {
             _headsup.Caption = "Level: ~b~" + _level;
-            _headsup.Caption += "~w~\nPatient Health: ~b~" + _victimPed.Health + "%~w~";
+            _headsup.Caption += "~w~\nPatient Health: ~b~" + (_victimPed.Health - 100) + "%~w~";
             _headsup.Draw();
             _headsupRectangle.Draw();
             if (_secondTicks >= 100)
@@ -207,13 +207,13 @@ public class GtaAmbulance : Script
                 }
                 else
                 {
-                    if (_rnd.Next(0, 101) <= 70 && !_cprBeingApplied && !_cprAppliedThisMission)
+                    if (_rnd.Next(100, 201) <= 170 && !_cprBeingApplied && !_cprAppliedThisMission)
                     {
                         _victimPed.Health -= _rnd.Next(1, 3);
                     }
                 }
             }
-            if (_victimPed.Health <= 0)
+            if (_victimPed.Health <= 100)
             {
                 _timer = 200;
                 _bigmessage.Caption = "Patient dead";
@@ -263,12 +263,12 @@ public class GtaAmbulance : Script
                 _blip.ShowRoute = false;
                 _blip.Remove();
                   
-                _bigmessage.Caption = "Rewarded ~b~" + ((_level * PayoutMultiplier) + (_level * _victimPed.Health)) + "~w~ Dollars";
+                _bigmessage.Caption = "Rewarded ~b~" + ((_level * PayoutMultiplier) + (_level * (_victimPed.Health - 100))) + "~w~ Dollars";
                 _timer = 200;
                 _bigmessage.Color = Color.WhiteSmoke;
                 _bigmessage.Scale = 1.1f;
                 _showMessage = true;
-                AddCash((_level * PayoutMultiplier) + (_level * _victimPed.Health));
+                AddCash((_level * PayoutMultiplier) + (_level * (_victimPed.Health - 100)));
                 _level++;
                 //this.victimPed.MarkAsNoLongerNeeded();
                     
@@ -280,7 +280,7 @@ public class GtaAmbulance : Script
         else if (_victimPed != null && _onAmbulanceMission && !player.IsInVehicle())
         {
             _headsup.Caption = "Level: ~b~" + _level;
-            _headsup.Caption += "\n~w~Patient Health: ~b~" + _victimPed.Health + "%~w~";
+            _headsup.Caption += "\n~w~Patient Health: ~b~" + (_victimPed.Health - 100) + "%~w~";
             _headsup.Draw();
             _headsupRectangle.Draw();
             if (_secondTicks >= 50)
@@ -296,13 +296,13 @@ public class GtaAmbulance : Script
                 }
                 else
                 {
-                    if (_rnd.Next(0, 101) <= 50 && !_cprBeingApplied && !_cprAppliedThisMission)
+                    if (_rnd.Next(100, 201) <= 150 && !_cprBeingApplied && !_cprAppliedThisMission)
                     {
                         _victimPed.Health -= _rnd.Next(1, 3);
                     }
                 }
             }
-            if (_victimPed.Health <= 0)
+            if (_victimPed.Health <= 100)
             {
                 _timer = 200;
                 _bigmessage.Caption = "Patient dead";
@@ -546,7 +546,7 @@ public class GtaAmbulance : Script
 
         //this.victimPed.IsPersistent = true;
         //this.victimPed.AlwaysDiesOnLowHealth = false;
-        _victimPed.Health = _level >= 14 ? 30 : _difficultyScale[_level-1];
+        _victimPed.Health = _level >= 14 ? 130 : _difficultyScale[_level-1];
         player.IsEnemy = false;
         _victimPed.IsEnemy = false;
 
